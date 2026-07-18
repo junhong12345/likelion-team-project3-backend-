@@ -23,6 +23,7 @@ app.add_middleware(
 BASE_PATH = Path("/root/project")
 REPORTS_PATH = BASE_PATH / "reports.json"
 UPLOAD_DIR = BASE_PATH / "uploads"
+LOGIC2_RESULT_PATH = BASE_PATH / "Logic2_result.json"
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 app.mount(
@@ -113,3 +114,34 @@ def create_report(request: API_Model):
         "message": "신고가 접수되었습니다."
     }
 
+@app.get("/api/logic2")
+def get_logic2_result():
+    if not LOGIC2_RESULT_PATH.exists():
+        return {
+            "success": True,
+            "message" : "데이터 가져오기 실패"
+        }
+
+    try:
+        with open(LOGIC2_RESULT_PATH, "r", encoding= "utf-8") as f:
+            logic2_result=  json.load(f)    #LOGIC2_RESULT_PATH 경로 파일 가져오기 json 형식으로
+
+            return {
+                "success": True,
+                "data": logic2_result,
+                "message" : "데이터 가져오기 성공"
+            } 
+    except json.JSONDecodeError:
+        return {
+            "success": False,
+            "message": "Logic2_result.json 파일 형식이 올바르지 않습니다."
+        }
+    
+    except Exception as e:
+        print(f"ERROR: {e}")
+        return {
+            "success": False,
+            "message": str(e)
+        }
+    
+    
