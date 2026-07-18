@@ -1,0 +1,14 @@
+#해당 파일은 Logic2 아웃풋 데이터 예시입니다.
+{
+  "success": true,
+  "department": "관련부서",
+  "reportId": 1,
+  "title": "불법 쓰레기 투기",
+  "category": "litter",
+  "content": "공원 입구에 쓰레기가 많이 쌓여 있습니다.",
+  "address": "충청북도 청주시 상당구",
+  "latitude": 36.6358,
+  "longitude": 127.4913,
+  "imageUrl": "/uploads/2391034a-ae42-48ab-84e6-d40275dea187.png",
+  "status": "전달 완료"
+}
