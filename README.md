@@ -292,6 +292,6 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 
 # 👨‍💻 Team
 
-**멋쟁이사자처럼 Team Project 3**
+**멋쟁이사자처럼 Team Project 2**
 
 **Project : 무심천 Eco-Monitor**
