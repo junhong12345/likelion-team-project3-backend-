@@ -8,6 +8,7 @@ import base64
 import uuid
 
 from main_pipeline import main_pipeline
+from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
 
@@ -41,6 +42,10 @@ class API_Model(BaseModel):
     longitude: float
     imageUrl: str
 
+class StatusUpdate(BaseModel):
+    status: str
+
+    
 @app.get("/")
 def root():
     return "OK"
@@ -143,5 +148,56 @@ def get_logic2_result():
             "success": False,
             "message": str(e)
         }
-    
-    
+
+@app.patch("/api/reports/{report_id}/status")
+def update_report_status(
+    report_id: int,
+    status_data: StatusUpdate
+):
+
+    try:
+        if not REPORTS_PATH.exists():
+            raise HTTPException(
+                status_code=404,
+                detail="reports.json 파일이 존재하지 않습니다."
+            )
+
+        with open(REPORTS_PATH, "r", encoding="utf-8") as f:
+            reports = json.load(f)
+
+        target_report = None
+
+        for report in reports:
+            if report.get("reportId") == report_id:
+                report["status"] = status_data.status
+                target_report = report
+                break
+
+        if target_report is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"reportId {report_id} 신고를 찾을 수 없습니다."
+            )
+
+        with open(REPORTS_PATH, "w", encoding="utf-8") as f:
+            json.dump(
+                reports,
+                f,
+                ensure_ascii=False,
+                indent=4
+            )
+
+        return {
+            "success": True,
+            "message": "신고 상태가 변경되었습니다.",
+            "data": target_report
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
